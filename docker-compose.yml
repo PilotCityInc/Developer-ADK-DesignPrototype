@@ -3,8 +3,8 @@ networks:
   pdk:
     driver: bridge
 services:
-  microapp: #in container-based development
-    container_name: microapp
+  designprototype: #in container-based development
+    container_name: designprototype
     build: 
       context: .
       dockerfile: client.dockerfile 
@@ -18,7 +18,7 @@ services:
       - ./:/usr/src/app
       - usr/src/app/node_modules
     ports:
-      - 8080:8080
+      - 8012:8080
     stdin_open: true
     tty: true
     command: ["yarn","run","serve"]
