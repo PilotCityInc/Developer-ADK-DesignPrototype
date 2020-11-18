@@ -34,14 +34,25 @@
       </v-expansion-panels>
     </div>
 
-    <v-progress-linear
+    <div class="module-default__log-text">
+      <v-text-field
+        class="module-default__text-field"
+        placeholder="Describe your process log"
+        outlined
+      ></v-text-field>
+      <v-btn class="module-default__log-btn" depressed :ripple="false">LOG</v-btn>
+    </div>
+
+    <Table class="module-default__table-view"></Table>
+
+    <!-- <v-progress-linear
       class="module-default__collapse-divider"
       color="#dedede"
       height="2"
       value="75"
       buffer-value="95"
       stream
-    />
+    /> -->
 
     <div class="module-default__scope">
       <v-btn dense color="blue" small rounded outlined depressed
@@ -328,14 +339,16 @@
 <script lang="ts">
 import { ref } from '@vue/composition-api';
 import Instruct from './ModuleInstruct.vue';
+import Table from './TableView.vue';
 
 export default {
   name: 'ModuleDefault',
   components: {
-    Instruct
+    Instruct,
+    Table
   },
   apollo: {},
-  data() {
+  setup() {
     const setupInstructions = ref({
       description: '',
       instructions: ['', '', '']
@@ -351,6 +364,31 @@ export default {
 
 <style lang="scss">
 .module-default {
+  &__log-text {
+    display: flex;
+  }
+
+  &__text-field {
+    &.v-text-field {
+      width: 400px;
+    }
+  }
+
+  &__log-btn {
+    &.v-btn:not(.v-btn--round).v-size--default {
+      min-height: 57px;
+    }
+    margin-left: 20px;
+    height: 100%;
+  }
+
+  &__table-view {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 20px;
+  }
+
   &__collapse-divider {
     margin-top: 15px;
     margin-bottom: 75px;
