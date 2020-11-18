@@ -8,7 +8,7 @@
       hide-default-footer="true"
     >
       <template v-slot:item.delete>
-        <v-btn depressed color="#FFFFFF" :ripple="FALSE"
+        <v-btn depressed color="#FFFFFF" :ripple="false"
           ><v-icon color="#FF0000"> mdi-delete </v-icon></v-btn
         >
       </template>
