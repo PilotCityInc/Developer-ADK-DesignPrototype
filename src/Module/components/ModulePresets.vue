@@ -2,8 +2,15 @@
   <v-container class="module-outcomes">
     <div class="module-outcomes__container">
       <!-- <v-divider class="presets__divider"></v-divider> -->
-      <div class="presets__section-title">Activity Presets</div>
-      <div class="presets__nopresets">No tweaking necessary</div>
+      <div class="presets__section-title">
+        Minimum amount of logs before triggering unlock (Default 3 logs)
+      </div>
+      <!-- POST-ACTIVITY REFLECTION -->
+      <v-text-field placeholder="Minimum amount of logs" outlined hide-details></v-text-field>
+      <div class="presets__reflection">
+        <v-btn class="presets__reflection-buttons" small depressed outlined>Save</v-btn>
+      </div>
+
       <v-divider class="presets__divider"></v-divider>
       <div class="presets__section-title">Instruction Presets</div>
       <Instruct v-model="setupInstructions" />
@@ -121,10 +128,10 @@ export default {
 
   &__section-title {
     color: #000000;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 800;
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
 
   &__nopresets {
