@@ -1,8 +1,8 @@
 export const HEADER = [
-  { text: 'Timestamp', align: 'start', value: 'time', width: '10%' },
-  { text: 'Log Description', align: 'start', value: 'log', width: '70%' },
-  { text: 'Proof Download', align: 'start', value: 'proof', sortable: false, width: '20%' },
-  { text: 'Delete', align: 'start', value: 'delete', sortable: false, width: '5%' }
+  { text: 'Timestamp', align: 'start', value: 'time', width: '30%' },
+  { text: 'Log Description', align: 'start', value: 'log', width: '50%' },
+  { text: 'Proof Download', align: 'start', value: 'proof', sortable: false, width: '10%' },
+  { text: 'Delete', align: 'center', value: 'delete', sortable: false, width: '10%' }
 ];
 
 export const items = [
