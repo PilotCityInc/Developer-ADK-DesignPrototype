@@ -16,7 +16,7 @@ services:
       - npm_config_unsafe_perm=true
     volumes:
       - ./:/usr/src/app
-      - usr/src/app/node_modules
+      - /usr/src/app/node_modules
     ports:
       - 8012:8080
     stdin_open: true
