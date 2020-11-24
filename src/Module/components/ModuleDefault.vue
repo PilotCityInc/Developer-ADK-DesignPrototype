@@ -41,15 +41,29 @@
       buffer-value="100"
       stream
     />
-    <div class="module-edit__container">
+    <div class="module-edit__container-preview">
       <div class="module-default__log-text">
         <v-text-field
           class="module-default__text-field"
-          placeholder="Log your design and prototype milestones"
+          placeholder="Describe your milestone and upload proof"
           outlined
           append-icon="mdi-attachment"
-        ></v-text-field>
-        <v-btn class="module-default__log-btn" outlined depressed :ripple="false">LOG</v-btn>
+          label="Log your milestones"
+          @click:append="
+            'file input and attachment';
+
+          "
+        >
+        </v-text-field>
+
+        <v-btn class="module-default__log-btn" outlined depressed :ripple="false"
+          >LOG MILESTONE</v-btn
+        >
+      </div>
+      <div class="module-default__log-chips">
+        <v-chip v-if="chip1" color="green" dark label close @click:close="chip1 = false">
+          filename.png
+        </v-chip>
       </div>
 
       <Table class="module-default__table-view"></Table>
@@ -80,7 +94,8 @@ export default {
     const showInstructions = ref(true);
     return {
       setupInstructions,
-      showInstructions
+      showInstructions,
+      chip1: true
     };
   }
 };
@@ -90,6 +105,12 @@ export default {
 .module-default {
   &__log-text {
     display: flex;
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &__log-chips {
     max-width: 85%;
     margin-left: auto;
     margin-right: auto;

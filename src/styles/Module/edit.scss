@@ -5,7 +5,11 @@
 }
 .module-edit{
   &__container{
-    max-width: 100%;
+    max-width: 85%;
     width: 100%;
   }
+    &__container-preview{
+      max-width: 100%;
+      width: 100%;
+    }
 }
