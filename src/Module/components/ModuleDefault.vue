@@ -43,30 +43,58 @@
     />
     <div class="module-edit__container-preview">
       <div class="module-default__log-text">
+        <input
+          ref="fileInput"
+          type="file"
+          accept="image/*"
+          multiple
+          style="display: none"
+          @change="onFilesAdded"
+        />
         <v-text-field
+          v-model="logInput"
           class="module-default__text-field"
           placeholder="Describe your milestone and upload proof"
           outlined
+          hide-details="auto"
+          :error-messages="logError"
           append-icon="mdi-attachment"
           label="Log your milestones"
-          @click:append="
-            'file input and attachment';
-
-          "
+          @click:append="$refs.fileInput.click()"
         >
         </v-text-field>
 
-        <v-btn class="module-default__log-btn" outlined depressed :ripple="false"
+        <v-btn
+          class="module-default__log-btn"
+          outlined
+          depressed
+          :ripple="false"
+          @click="logMilestone"
           >LOG MILESTONE</v-btn
         >
       </div>
       <div class="module-default__log-chips">
-        <v-chip v-if="chip1" color="green" dark label close @click:close="chip1 = false">
-          filename.png
+        <v-chip
+          v-for="filename in filenames"
+          :key="filename"
+          class="ma-1"
+          color="green"
+          dark
+          label
+          close
+          @click:close="removeFile(filename)"
+        >
+          {{ filename }}
         </v-chip>
       </div>
 
-      <Table class="module-default__table-view"></Table>
+      <Table
+        class="module-default__table-view"
+        :items="tableItems"
+        :user-id="userId"
+        v-on="$listeners"
+        @removeMilestone="removeMilestone"
+      />
       <!-- ENTER CONTENT HERE -->
       <!-- DESIGN YOUR ACTIVITY HERE / COMMENT OUT WHEN YOU'VE STARTED DESIGNING -->
       <!-- <div class="module-default__none">Design your activity here</div> -->
@@ -75,9 +103,10 @@
 </template>
 
 <script lang="ts">
-import { ref } from '@vue/composition-api';
+import { ref, reactive, toRefs, computed } from '@vue/composition-api';
 import Instruct from './ModuleInstruct.vue';
 import Table from './TableView.vue';
+import { TableItem } from '../types';
 
 export default {
   name: 'ModuleDefault',
@@ -85,17 +114,98 @@ export default {
     Instruct,
     Table
   },
-  apollo: {},
   setup() {
+    const fileInput = ref(null);
+    const showInstructions = ref(true);
     const setupInstructions = ref({
       description: '',
       instructions: ['', '', '']
     });
-    const showInstructions = ref(true);
+
+    const state = reactive({
+      logInput: '',
+      logError: '',
+      filenames: [] as string[],
+      imageUrls: [] as string[],
+      tableItems: [
+        {
+          id: 1,
+          author: 2,
+          log: 'this is a team log',
+          time: new Date(),
+          proof: [
+            'https://i.picsum.photos/id/56/800/600.jpg?hmac=FyoyxQ0fYaFrRoOBWRZdezHzk6sRAz-6rUWEhLJJPi4',
+            'https://i.picsum.photos/id/695/800/600.jpg?hmac=TL1K4j89C4vOeDFLlzW0-BaQ2RQMMPW_4W3bW62nChM',
+            'https://i.picsum.photos/id/88/800/600.jpg?hmac=pq_NN0ufELA-i1KBoWVClHR8PgrP33qly7AngNm0VJ0'
+          ]
+        }
+      ] as TableItem[]
+    });
+
+    const onFilesAdded = (event: Event) => {
+      event.target.files.forEach((file: File) => {
+        const reader = new FileReader();
+        reader.onload = (fileEvent: Event) => {
+          // !dummy image src url creator for demo purpose. replace with backend functions
+          state.imageUrls.push(fileEvent.target.result);
+        };
+        state.filenames.push(file.name);
+        reader.readAsDataURL(file);
+      });
+    };
+
+    const logMilestone = () => {
+      if (!state.filenames.length && !state.logInput.length) {
+        state.logError = 'Describe and attach an image of your milestone';
+        return;
+      }
+      if (!state.filenames.length) {
+        state.logError = 'Attach milestone screenshot, image or photo';
+        return;
+      }
+      if (!state.logInput.length) {
+        state.logError = 'Describe your milestone';
+        return;
+      }
+
+      state.tableItems.unshift({
+        id: Math.floor(Math.random() * 100),
+        log: state.logInput,
+        time: new Date(),
+        author: 1, // !dummy user id for now
+        proof: state.imageUrls
+      });
+
+      state.imageUrls = [];
+      state.logInput = '';
+      state.filenames = [];
+      state.logError = '';
+    };
+
+    const removeMilestone = (id: number) => {
+      state.tableItems = state.tableItems.filter(item => {
+        return item.id !== id;
+      });
+    };
+
+    const removeFile = (file: string) => {
+      const index = state.filenames.indexOf(file);
+      if (index > -1) {
+        state.filenames.splice(index, 1);
+        state.imageUrls.splice(index, 1);
+      }
+    };
+
     return {
+      ...toRefs(state),
+      fileInput,
+      onFilesAdded,
+      logMilestone,
+      removeMilestone,
+      removeFile,
       setupInstructions,
       showInstructions,
-      chip1: true
+      userId: 1
     };
   }
 };

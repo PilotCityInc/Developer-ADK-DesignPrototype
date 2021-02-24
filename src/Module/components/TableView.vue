@@ -1,40 +1,92 @@
 <template>
   <div class="tableview__column mt-12">
-    <v-btn x-small outlined depressed class="mr-1 mb-6">Personal</v-btn>
-    <v-btn class="ml-1 mb-6" x-small outlined depressed>Team</v-btn>
+    <v-btn
+      x-small
+      depressed
+      class="mr-1 mb-6"
+      :dark="filter === 'Personal' ? true : false"
+      :outlined="filter !== 'Personal' ? true : false"
+      @click="filter = 'Personal'"
+      >Personal</v-btn
+    >
+    <v-btn
+      class="ml-1 mb-6"
+      x-small
+      depressed
+      :dark="filter === 'Team' ? true : false"
+      :outlined="filter !== 'Team' ? true : false"
+      @click="filter = 'Team'"
+      >Team</v-btn
+    >
     <!-- <div class="tableview__total-log-title mt-6 b-2">Logged Time</div>
     <div class="tableview__total-log mb-6">00h 00m</div> -->
     <v-data-table
       :headers="header"
-      :items="items"
+      :items="tableItems"
       sort-by="resource"
       items-per-page="100"
       hide-default-footer="true"
     >
-      <template v-slot:item.delete>
-        <v-btn small icon depressed><v-icon small color="red"> mdi-delete </v-icon></v-btn>
-      </template>
       <template v-slot:item.avatar>
         <v-avatar size="30"
           ><img
             src="https://media-exp1.licdn.com/dms/image/C5603AQEq9BL9NuOBAQ/profile-displayphoto-shrink_200_200/0?e=1610582400&v=beta&t=1lSuL9hD0Fp4HGbTuAiQOTNOhOxXzqNvXVo1mg51Wmg"
         /></v-avatar>
       </template>
-      <template v-slot:item.proof>
-        <v-btn x-small outlined><v-icon small left>mdi-magnify</v-icon>View</v-btn>
+      <template v-slot:item.proof="{ item }">
+        <ProofPreview :images="item.proof" />
+      </template>
+      <template v-slot:item.time="{ item }">
+        <span>{{ formatDate(item.time) }}</span>
+      </template>
+      <template v-slot:item.delete="{ item }">
+        <v-btn
+          v-if="item.author === userId"
+          small
+          icon
+          depressed
+          @click="$emit('removeMilestone', item.id)"
+          ><v-icon small color="red"> mdi-delete </v-icon></v-btn
+        >
       </template>
     </v-data-table>
   </div>
 </template>
 
 <script lang="ts">
-import { ref } from '@vue/composition-api';
-import { items, HEADER } from './const';
+import moment from 'moment';
+import { ref, PropType, computed } from '@vue/composition-api';
+import ProofPreview from './ProofPreview.vue';
+import TABLE_HEADER from './const';
+import { TableItem } from '../types';
 
 export default {
   name: 'TableView',
-  setup() {
-    return { header: ref(HEADER), items };
+  components: {
+    ProofPreview
+  },
+  props: {
+    items: {
+      required: true,
+      type: [] as PropType<TableItem[]>
+    },
+    userId: {
+      required: true,
+      type: Number
+    }
+  },
+  setup(props) {
+    const filter = ref('Personal');
+    const tableItems = computed(() =>
+      props.items.filter((item: TableItem) => {
+        if (filter.value === 'Personal') return item.author === props.userId;
+        return true;
+      })
+    );
+    const formatDate = (date: Date) => {
+      return moment(date).fromNow();
+    };
+    return { header: ref(TABLE_HEADER), formatDate, filter, tableItems };
   }
 };
 </script>
