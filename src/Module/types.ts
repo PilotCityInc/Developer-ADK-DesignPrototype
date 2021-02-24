@@ -3,5 +3,9 @@ export interface TableItem {
   author: number;
   time: Date;
   log: string;
-  proof: string | string[];
+  proof: Image | Image[];
+}
+export interface Image {
+  name: string;
+  url: string;
 }

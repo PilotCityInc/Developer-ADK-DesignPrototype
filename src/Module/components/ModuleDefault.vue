@@ -75,16 +75,16 @@
       </div>
       <div class="module-default__log-chips">
         <v-chip
-          v-for="filename in filenames"
-          :key="filename"
+          v-for="image in images"
+          :key="image.name"
           class="ma-1"
           color="green"
           dark
           label
           close
-          @click:close="removeFile(filename)"
+          @click:close="removeFile(image.name)"
         >
-          {{ filename }}
+          {{ image.name }}
         </v-chip>
       </div>
 
@@ -103,10 +103,10 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, toRefs, computed } from '@vue/composition-api';
+import { ref, reactive, toRefs } from '@vue/composition-api';
 import Instruct from './ModuleInstruct.vue';
 import Table from './TableView.vue';
-import { TableItem } from '../types';
+import { TableItem, Image } from '../types';
 
 export default {
   name: 'ModuleDefault',
@@ -125,8 +125,7 @@ export default {
     const state = reactive({
       logInput: '',
       logError: '',
-      filenames: [] as string[],
-      imageUrls: [] as string[],
+      images: [] as Image[],
       tableItems: [
         {
           id: 1,
@@ -134,9 +133,21 @@ export default {
           log: 'this is a team log',
           time: new Date(),
           proof: [
-            'https://i.picsum.photos/id/56/800/600.jpg?hmac=FyoyxQ0fYaFrRoOBWRZdezHzk6sRAz-6rUWEhLJJPi4',
-            'https://i.picsum.photos/id/695/800/600.jpg?hmac=TL1K4j89C4vOeDFLlzW0-BaQ2RQMMPW_4W3bW62nChM',
-            'https://i.picsum.photos/id/88/800/600.jpg?hmac=pq_NN0ufELA-i1KBoWVClHR8PgrP33qly7AngNm0VJ0'
+            {
+              name: 'file2',
+              url:
+                'https://i.picsum.photos/id/56/800/600.jpg?hmac=FyoyxQ0fYaFrRoOBWRZdezHzk6sRAz-6rUWEhLJJPi4'
+            },
+            {
+              name: 'file1',
+              url:
+                'https://i.picsum.photos/id/695/800/600.jpg?hmac=TL1K4j89C4vOeDFLlzW0-BaQ2RQMMPW_4W3bW62nChM'
+            },
+            {
+              name: 'file3',
+              url:
+                'https://i.picsum.photos/id/88/800/600.jpg?hmac=pq_NN0ufELA-i1KBoWVClHR8PgrP33qly7AngNm0VJ0'
+            }
           ]
         }
       ] as TableItem[]
@@ -147,19 +158,21 @@ export default {
         const reader = new FileReader();
         reader.onload = (fileEvent: Event) => {
           // !dummy image src url creator for demo purpose. replace with backend functions
-          state.imageUrls.push(fileEvent.target.result);
+          state.images.push({
+            name: file.name,
+            url: fileEvent.target.result
+          });
         };
-        state.filenames.push(file.name);
         reader.readAsDataURL(file);
       });
     };
 
     const logMilestone = () => {
-      if (!state.filenames.length && !state.logInput.length) {
+      if (!state.images.length && !state.logInput.length) {
         state.logError = 'Describe and attach an image of your milestone';
         return;
       }
-      if (!state.filenames.length) {
+      if (!state.images.length) {
         state.logError = 'Attach milestone screenshot, image or photo';
         return;
       }
@@ -173,12 +186,11 @@ export default {
         log: state.logInput,
         time: new Date(),
         author: 1, // !dummy user id for now
-        proof: state.imageUrls
+        proof: state.images
       });
 
-      state.imageUrls = [];
+      state.images = [];
       state.logInput = '';
-      state.filenames = [];
       state.logError = '';
     };
 
@@ -189,11 +201,7 @@ export default {
     };
 
     const removeFile = (file: string) => {
-      const index = state.filenames.indexOf(file);
-      if (index > -1) {
-        state.filenames.splice(index, 1);
-        state.imageUrls.splice(index, 1);
-      }
+      state.images = state.images.filter((image: Image) => image.name !== file);
     };
 
     return {

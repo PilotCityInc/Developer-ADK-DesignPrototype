@@ -15,9 +15,9 @@
             </v-btn>
           </div>
         </v-card-title>
-        <v-carousel hide-delimiter-background>
-          <v-carousel-item v-for="image in images" :key="image">
-            <v-img :src="image" contain max-height="500" />
+        <v-carousel hide-delimiter-background :show-arrows="images.length > 1">
+          <v-carousel-item v-for="image in images" :key="image.name">
+            <v-img :src="image.url" contain max-height="500" />
           </v-carousel-item>
         </v-carousel>
       </v-card>
@@ -26,13 +26,14 @@
 </template>
 
 <script lang="ts">
-import { ref } from '@vue/composition-api';
+import { ref, PropType } from '@vue/composition-api';
+import { Image } from '../types';
 
 export default {
   name: 'ProofPreview',
   props: {
     images: {
-      type: [String, Array],
+      type: Object as PropType<Image>,
       required: true
     }
   },
