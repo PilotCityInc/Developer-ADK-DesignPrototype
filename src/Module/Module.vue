@@ -291,7 +291,7 @@ export default defineComponent({
     //   _id: props.programId
     // });
     // ENTER ACTIVITY NAME BELOW
-    const moduleName = ref('Design & Prototype Log');
+    const moduleName = ref('Make');
     const page = reactive({
       subpages: ['Setup', 'Presets'],
       currentPage: 'Setup'
