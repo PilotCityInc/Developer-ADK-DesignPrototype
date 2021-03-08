@@ -2,17 +2,17 @@
   "author": "Juxsta",
   "license": "MIT",
   "main": "/dist/index.ts",
-  "name": "developer-adk-boiler",
-  "version": "0.1.1",
+  "name": "developer-adk-designprototype",
+  "version": "1.0.2",
   "description": "PilotCity Development Kit Template for creating your own Program Activities",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PilotCityInc/PilotCity-PDK-Boiler.git"
+    "url": "git+https://github.com/PilotCityInc/Developer-ADK-DesignPrototype.git"
   },
   "bugs": {
-    "url": "https://github.com/PilotCityInc/PilotCity-PDK-Boiler/issues"
+    "url": "https://github.com/PilotCityInc/Developer-ADK-DesignPrototype/issues"
   },
-  "homepage": "https://github.com/PilotCityInc/PilotCity-PDK-Boiler#readme",
+  "homepage": "https://github.com/PilotCityInc/Developer-ADK-DesignPrototype#readme",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
