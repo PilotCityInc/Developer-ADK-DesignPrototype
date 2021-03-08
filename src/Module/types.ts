@@ -1,5 +1,7 @@
+import { ObjectId } from 'bson';
+
 export interface TableItem {
-  id: number;
+  id: ObjectId;
   author: number;
   time: Date;
   log: string;
@@ -8,4 +10,10 @@ export interface TableItem {
 export interface Image {
   name: string;
   url: string;
+}
+
+export interface MongoDoc {
+  data: Record<string, any>;
+  update: () => Promise<any>;
+  changeStream: any;
 }

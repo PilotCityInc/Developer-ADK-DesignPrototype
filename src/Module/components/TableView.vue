@@ -24,8 +24,8 @@
       :headers="header"
       :items="tableItems"
       sort-by="resource"
-      items-per-page="100"
-      hide-default-footer="true"
+      :items-per-page="100"
+      :hide-default-footer="true"
     >
       <template v-slot:item.avatar>
         <v-avatar size="30"
@@ -56,6 +56,7 @@
 <script lang="ts">
 import moment from 'moment';
 import { ref, PropType, computed } from '@vue/composition-api';
+import { ObjectId } from 'bson';
 import ProofPreview from './ProofPreview.vue';
 import TABLE_HEADER from './const';
 import { TableItem } from '../types';
@@ -68,11 +69,11 @@ export default {
   props: {
     items: {
       required: true,
-      type: [] as PropType<TableItem[]>
+      type: Array as PropType<TableItem[]>
     },
     userId: {
       required: true,
-      type: Number
+      type: Object as PropType<ObjectId>
     }
   },
   setup(props) {

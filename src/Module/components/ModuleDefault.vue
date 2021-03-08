@@ -90,7 +90,7 @@
 
       <Table
         class="module-default__table-view"
-        :items="tableItems"
+        :items="teamAdkData.logs"
         :user-id="userId"
         v-on="$listeners"
         @removeMilestone="removeMilestone"
@@ -103,10 +103,12 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, toRefs } from '@vue/composition-api';
+import { ref, reactive, toRefs, PropType } from '@vue/composition-api';
+import { getModMongoDoc, getModAdk } from 'pcv4lib/src';
+import { ObjectId } from 'bson';
+import { MongoDoc, TableItem, Image } from '../types';
 import Instruct from './ModuleInstruct.vue';
 import Table from './TableView.vue';
-import { TableItem, Image } from '../types';
 
 export default {
   name: 'ModuleDefault',
@@ -114,7 +116,23 @@ export default {
     Instruct,
     Table
   },
-  setup() {
+  props: {
+    value: {
+      required: true,
+      type: Object as PropType<MongoDoc>
+    },
+    teamDoc: {
+      required: false,
+      type: Object as PropType<MongoDoc>,
+      default: () => {}
+    },
+    studentDoc: {
+      required: false,
+      type: Object as PropType<MongoDoc>,
+      default: () => {}
+    }
+  },
+  setup(props, ctx) {
     const fileInput = ref(null);
     const showInstructions = ref(true);
     const setupInstructions = ref({
@@ -126,41 +144,38 @@ export default {
       logInput: '',
       logError: '',
       images: [] as Image[],
-      tableItems: [
-        {
-          id: 1,
-          author: 2,
-          log: 'this is a team log',
-          time: new Date(),
-          proof: [
-            {
-              name: 'file2',
-              url:
-                'https://i.picsum.photos/id/56/800/600.jpg?hmac=FyoyxQ0fYaFrRoOBWRZdezHzk6sRAz-6rUWEhLJJPi4'
-            },
-            {
-              name: 'file1',
-              url:
-                'https://i.picsum.photos/id/695/800/600.jpg?hmac=TL1K4j89C4vOeDFLlzW0-BaQ2RQMMPW_4W3bW62nChM'
-            },
-            {
-              name: 'file3',
-              url:
-                'https://i.picsum.photos/id/88/800/600.jpg?hmac=pq_NN0ufELA-i1KBoWVClHR8PgrP33qly7AngNm0VJ0'
-            }
-          ]
-        }
-      ] as TableItem[]
+      programDoc: null as null | MongoDoc,
+      teamDocument: null as null | MongoDoc,
+      studentDocument: null as null | MongoDoc,
+      userId: null as null | ObjectId,
+      teamAdkData: null as null | Record<string, any>
     });
 
+    const { adkData: teamAdkData } = getModAdk(
+      props,
+      ctx.emit,
+      'make',
+      {},
+      'teamDoc',
+      'inputTeamDoc'
+    );
+    state.teamAdkData = teamAdkData.value;
+
+    state.programDoc = getModMongoDoc(props, ctx.emit);
+    if (props.teamDoc)
+      state.teamDocument = getModMongoDoc(props, ctx.emit, {}, 'teamDoc', 'inputTeamDoc');
+    if (props.studentDoc)
+      state.studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
+
+    state.userId = state.studentDocument?.data._id;
+
     const onFilesAdded = (event: Event) => {
-      event.target.files.forEach((file: File) => {
+      event.target!.files.forEach((file: File) => {
         const reader = new FileReader();
         reader.onload = (fileEvent: Event) => {
-          // !dummy image src url creator for demo purpose. replace with backend functions
           state.images.push({
             name: file.name,
-            url: fileEvent.target.result
+            url: fileEvent.target!.result
           });
         };
         reader.readAsDataURL(file);
@@ -181,23 +196,28 @@ export default {
         return;
       }
 
-      state.tableItems.unshift({
-        id: Math.floor(Math.random() * 100),
+      const log = {
+        id: new ObjectId(),
         log: state.logInput,
         time: new Date(),
-        author: 1, // !dummy user id for now
+        author: state.studentDocument!.data._id,
         proof: state.images
-      });
+      };
+
+      state.teamAdkData!.logs.unshift(log);
+      state.teamDocument!.update();
 
       state.images = [];
       state.logInput = '';
       state.logError = '';
     };
 
-    const removeMilestone = (id: number) => {
-      state.tableItems = state.tableItems.filter(item => {
+    const removeMilestone = (id: ObjectId) => {
+      state.teamAdkData!.logs = state.teamAdkData!.logs.filter((item: TableItem) => {
+        console.log(item.id.toString());
         return item.id !== id;
       });
+      state.teamDocument!.update();
     };
 
     const removeFile = (file: string) => {
@@ -206,14 +226,14 @@ export default {
 
     return {
       ...toRefs(state),
+      teamAdkData,
       fileInput,
       onFilesAdded,
       logMilestone,
       removeMilestone,
       removeFile,
       setupInstructions,
-      showInstructions,
-      userId: 1
+      showInstructions
     };
   }
 };

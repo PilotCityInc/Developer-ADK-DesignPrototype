@@ -103,7 +103,14 @@
         </div>
         <div class="module__page">
           <keep-alive>
-            <component :is="getComponent" />
+            <component
+              :is="getComponent"
+              v-model="programDoc"
+              :team-doc="teamDoc"
+              :student-doc="studentDoc"
+              @inputTeamDoc="$emit('inputTeamDoc', $event)"
+              @inputStudentDoc="$emit('inputStudentDoc', $event)"
+            />
           </keep-alive>
         </div>
       </div>
@@ -261,14 +268,30 @@ body {
 }
 </style>
 <script lang="ts">
-import { computed, reactive, ref, toRefs, defineComponent } from '@vue/composition-api';
+import { computed, reactive, ref, toRefs, defineComponent, PropType } from '@vue/composition-api';
 import '../styles/module.scss';
-// import { Collection } from 'mongodb';
+import { getModMongoDoc, getModAdk } from 'pcv4lib/src';
+import { MongoDoc } from './types';
 import * as Module from './components';
 
 export default defineComponent({
   name: 'ModuleName',
-
+  props: {
+    value: {
+      required: true,
+      type: Object as PropType<MongoDoc>
+    },
+    teamDoc: {
+      required: false,
+      type: Object as PropType<MongoDoc | null>,
+      default: () => {}
+    },
+    studentDoc: {
+      required: false,
+      type: Object as PropType<MongoDoc | null>,
+      default: () => {}
+    }
+  },
   components: {
     'module-monitor': Module.Monitor,
     'module-setup': Module.Setup,
@@ -285,11 +308,18 @@ export default defineComponent({
   //   type: String
   // }
   //   },
-  setup() {
-    //
-    // props.programCollection.findOne({
-    //   _id: props.programId
-    // });
+  setup(props, ctx) {
+    const programDoc = getModMongoDoc(props, ctx.emit);
+    const defaultMakeProps = {
+      minLogs: 3
+    };
+    getModAdk(props, ctx.emit, 'make', defaultMakeProps);
+
+    const defaultTeamProps = {
+      logs: []
+    };
+    getModAdk(props, ctx.emit, 'make', defaultTeamProps, 'teamDoc', 'inputTeamDoc');
+
     // ENTER ACTIVITY NAME BELOW
     const moduleName = ref('Make');
     const page = reactive({
@@ -353,7 +383,8 @@ export default defineComponent({
       getColor,
       ...toRefs(timelineData),
       timeline,
-      comment
+      comment,
+      programDoc
     };
   }
 });

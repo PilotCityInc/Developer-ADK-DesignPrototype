@@ -7,10 +7,26 @@
         Minimum amount of logs before triggering unlock (Default 3 logs)
       </div>
       <!-- POST-ACTIVITY REFLECTION -->
-      <v-text-field placeholder="Minimum amount of logs" outlined hide-details></v-text-field>
+      <v-text-field
+        v-model="adkData.minLogs"
+        placeholder="Minimum amount of logs"
+        outlined
+        hide-details
+      ></v-text-field>
       <div class="presets__reflection">
-        <v-btn class="presets__reflection-buttons" small depressed outlined>Save</v-btn>
+        <v-btn
+          class="presets__reflection-buttons"
+          small
+          depressed
+          outlined
+          :loading="loading"
+          @click="process()"
+          >Save</v-btn
+        >
       </div>
+      <v-alert v-if="success || error" :type="success ? 'success' : 'error'" class="mt-2">{{
+        message
+      }}</v-alert>
       <!-- <div class="presets__nopresets">No tweaking necessary</div> -->
       <v-divider class="presets__divider"></v-divider>
       <div class="presets__section-title">Instructions</div>
@@ -78,17 +94,29 @@
 </template>
 
 <script lang="ts">
-import { reactive, ref, toRefs } from '@vue/composition-api';
+import { reactive, ref, toRefs, PropType } from '@vue/composition-api';
+import { loading, getModAdk, getModMongoDoc } from 'pcv4lib/src';
 import Instruct from './ModuleInstruct.vue';
-// import gql from 'graphql-tag';
+import { MongoDoc } from '../types';
 
 export default {
   name: 'ModulePresets',
   components: {
     Instruct
   },
-  apollo: {},
-  setup() {
+  props: {
+    value: {
+      required: true,
+      type: Object as PropType<MongoDoc>
+    },
+    teamDoc: {
+      required: true,
+      type: Object as PropType<MongoDoc>
+    }
+  },
+  setup(props, ctx) {
+    const { adkData } = getModAdk(props, ctx.emit, 'make');
+    const programDoc = getModMongoDoc(props, ctx.emit);
     const presets = reactive({
       group: ['Setup', 'Project', 'Screening', 'Internship'],
       required: ['Creator requires this activity', 'Yes', 'No'],
@@ -114,7 +142,9 @@ export default {
     });
     return {
       ...toRefs(presets),
-      setupInstructions
+      setupInstructions,
+      adkData,
+      ...loading(programDoc.value.update, 'Saved Successfully', 'Could not save at this time')
     };
   }
 };
