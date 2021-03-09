@@ -2,6 +2,7 @@
   <v-app>
     <Module
       v-model="programDocStub"
+      :user-type="userTypeStub"
       :team-doc="teamDoc"
       :student-doc="studentDoc"
       @inputTeamDoc="teamDoc = $event"
@@ -120,10 +121,13 @@ export default defineComponent({
       },
       changeStream: {}
     });
+    const userTypeStub = 'participant';
+
     return {
       programDocStub,
       studentDoc,
-      teamDoc
+      teamDoc,
+      userTypeStub
     };
   }
 });
