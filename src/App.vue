@@ -121,7 +121,7 @@ export default defineComponent({
       },
       changeStream: {}
     });
-    const userTypeStub = 'participant';
+    const userTypeStub = 'organizer';
 
     return {
       programDocStub,

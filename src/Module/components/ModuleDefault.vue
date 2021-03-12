@@ -56,6 +56,7 @@
           class="module-default__text-field"
           placeholder="Describe your milestone and upload proof"
           outlined
+          rounded
           hide-details="auto"
           :error-messages="logError"
           append-icon="mdi-attachment"
@@ -67,6 +68,7 @@
         <v-btn
           class="module-default__log-btn"
           outlined
+          rounded
           depressed
           :ripple="false"
           @click="logMilestone"
@@ -80,7 +82,6 @@
           class="ma-1"
           color="green"
           dark
-          label
           close
           @click:close="removeFile(image.name)"
         >

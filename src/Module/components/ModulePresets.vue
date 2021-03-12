@@ -1,20 +1,22 @@
 <template>
   <v-container class="module-outcomes">
-    <div class="module-outcomes__container">
+    <div class="module-outcomes__container d-flex justify-center flex-column">
       <!-- <v-divider class="presets__divider"></v-divider> -->
       <div class="presets__section-title">General</div>
       <!-- POST-ACTIVITY REFLECTION -->
-      <v-text-field
+      <v-select
         v-model="adkData.minLogs"
-        placeholder="Minimum amount of logs"
+        placeholder=""
         outlined
         x-large
+        label="Minimum amount of logs"
+        :items="minLogsItems"
         rounded
         hide-details
-      ></v-text-field>
-      <div class="presets__reflection">
+      ></v-select>
+      <div class="presets__reflection justify-center d-flex">
         <v-btn
-          class="presets__reflection-buttons"
+          class="presets__reflection-buttons mt-12"
           x-large
           rounded
           depressed
@@ -118,6 +120,38 @@ export default {
     const { adkData } = getModAdk(props, ctx.emit, 'make');
     const programDoc = getModMongoDoc(props, ctx.emit);
     const presets = reactive({
+      minLogsItems: [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
       group: ['Setup', 'Project', 'Screening', 'Internship'],
       required: ['Creator requires this activity', 'Yes', 'No'],
       lockOrder: ['Creator locked activity group and placement order', 'Yes', 'No'],
@@ -158,7 +192,7 @@ export default {
   }
 
   &__reflection {
-    margin-left: auto;
+    // margin-left: auto;
   }
 
   &__divider {
@@ -168,7 +202,7 @@ export default {
 
   &__section-title {
     color: #000000;
-    font-size: 20px;
+    font-size: 25px;
     font-weight: 800;
     text-align: center;
     margin-bottom: 20px;
