@@ -3,20 +3,20 @@
     <div class="module-outcomes__container">
       <!-- <v-divider class="presets__divider"></v-divider> -->
       <div class="presets__section-title">General</div>
-      <div class="presets__section-title">
-        Minimum amount of logs before triggering unlock (Default 3 logs)
-      </div>
       <!-- POST-ACTIVITY REFLECTION -->
       <v-text-field
         v-model="adkData.minLogs"
         placeholder="Minimum amount of logs"
         outlined
+        x-large
+        rounded
         hide-details
       ></v-text-field>
       <div class="presets__reflection">
         <v-btn
           class="presets__reflection-buttons"
-          small
+          x-large
+          rounded
           depressed
           outlined
           :loading="loading"
@@ -28,7 +28,7 @@
         message
       }}</v-alert>
       <!-- <div class="presets__nopresets">No tweaking necessary</div> -->
-      <v-divider class="presets__divider"></v-divider>
+      <!-- <v-divider class="presets__divider"></v-divider>
       <div class="presets__section-title">Instructions</div>
       <Instruct v-model="setupInstructions" />
       <v-divider class="presets__divider"></v-divider>
@@ -45,25 +45,25 @@
         :items="required"
         label="Is this activity required for participants to complete?"
         outlined
-      ></v-select>
+      ></v-select> -->
 
       <!-- <v-select
         :items="lockOrder"
         label="Lock activity group and placement order?"
         outlined
       ></v-select> -->
-      <v-select disabled :items="deliverable" label="Is this a deliverable?" outlined></v-select>
+      <!-- <v-select disabled :items="deliverable" label="Is this a deliverable?" outlined></v-select> -->
       <!-- <v-select
         :items="accessibility"
         label="Make this activity accessible to participants anytime?"
         outlined
       ></v-select> -->
-      <v-select
+      <!-- <v-select
         disabled
         :items="endEarly"
         label="Allow participants to end program early after completion of this activity?"
         outlined
-      ></v-select>
+      ></v-select> -->
       <!-- POST-ACTIVITY REFLECTION -->
       <!-- <v-text-field
         label="Post-Activity Reflection"
@@ -75,7 +75,7 @@
         <v-btn class="presets__reflection-buttons" small depressed outlined>Save</v-btn>
         <v-btn class="presets__reflection-buttons" small depressed outlined>Preview</v-btn>
       </div> -->
-      <v-divider class="presets__divider"></v-divider>
+      <!-- <v-divider class="presets__divider"></v-divider> -->
       <!-- If activity is required, show button below, make tooltip show up while disabled, right now tooltip doesn't show up -->
       <!-- <div>
         <v-tooltip bottom>
@@ -86,9 +86,9 @@
         </v-tooltip>
       </div> -->
       <!-- Delete break when the two delete buttons above and below have been integrated as one solution -->
-      <br />
+      <!-- <br /> -->
       <!-- If activity is optional, show button below -->
-      <div><v-btn color="red" disabled depressed>Delete Activity</v-btn></div>
+      <!-- <div><v-btn color="red" disabled depressed>Delete Activity</v-btn></div> -->
     </div>
   </v-container>
 </template>
@@ -96,13 +96,13 @@
 <script lang="ts">
 import { reactive, ref, toRefs, PropType } from '@vue/composition-api';
 import { loading, getModAdk, getModMongoDoc } from 'pcv4lib/src';
-import Instruct from './ModuleInstruct.vue';
+// import Instruct from './ModuleInstruct.vue';
 import { MongoDoc } from '../types';
 
 export default {
   name: 'ModulePresets',
   components: {
-    Instruct
+    // Instruct
   },
   props: {
     value: {
