@@ -4,6 +4,7 @@
       v-model="programDocStub"
       :user-type="userTypeStub"
       :team-doc="teamDoc"
+      :user-doc="userDoc"
       :student-doc="studentDoc"
       @inputTeamDoc="teamDoc = $event"
       @inputStudentDoc="studentDoc = $event"
@@ -121,11 +122,20 @@ export default defineComponent({
       },
       changeStream: {}
     });
+    const userDoc: Ref<MongoDoc> = ref({
+      data: {
+        firstName: 'me',
+        lastName: 'test',
+        _id: new ObjectId(2)
+      },
+      changeStream: {}
+    });
     const userTypeStub = 'organizer';
 
     return {
       programDocStub,
       studentDoc,
+      userDoc,
       teamDoc,
       userTypeStub
     };

@@ -104,14 +104,14 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, toRefs, PropType } from '@vue/composition-api';
+import { ref, reactive, toRefs, PropType, defineComponent } from '@vue/composition-api';
 import { getModMongoDoc, getModAdk } from 'pcv4lib/src';
 import { ObjectId } from 'bson';
 import { MongoDoc, TableItem, Image } from '../types';
 import Instruct from './ModuleInstruct.vue';
 import Table from './TableView.vue';
 
-export default {
+export default defineComponent({
   name: 'ModuleDefault',
   components: {
     Instruct,
@@ -128,6 +128,11 @@ export default {
       default: () => {}
     },
     studentDoc: {
+      required: false,
+      type: Object as PropType<MongoDoc>,
+      default: () => {}
+    },
+    userDoc: {
       required: false,
       type: Object as PropType<MongoDoc>,
       default: () => {}
@@ -168,7 +173,7 @@ export default {
     if (props.studentDoc)
       state.studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
 
-    state.userId = state.studentDocument?.data._id;
+    state.userId = props.userDoc?.data._id;
 
     const onFilesAdded = (event: Event) => {
       event.target!.files.forEach((file: File) => {
@@ -201,7 +206,7 @@ export default {
         id: new ObjectId(),
         log: state.logInput,
         time: new Date(),
-        author: state.studentDocument!.data._id,
+        author: props.userDoc?.data._id,
         proof: state.images
       };
 
@@ -237,7 +242,7 @@ export default {
       showInstructions
     };
   }
-};
+});
 </script>
 
 <style lang="scss">

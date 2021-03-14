@@ -109,6 +109,7 @@
               :is="getComponent"
               v-model="programDoc"
               :team-doc="teamDoc"
+              :user-doc="userDoc"
               :student-doc="studentDoc"
               @inputTeamDoc="$emit('inputTeamDoc', $event)"
               @inputStudentDoc="$emit('inputStudentDoc', $event)"
@@ -296,6 +297,11 @@ export default defineComponent({
       // stakeholder: ''
     },
     studentDoc: {
+      required: false,
+      type: Object as PropType<MongoDoc | null>,
+      default: () => {}
+    },
+    userDoc: {
       required: false,
       type: Object as PropType<MongoDoc | null>,
       default: () => {}
