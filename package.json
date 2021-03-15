@@ -2,8 +2,8 @@
   "author": "Juxsta",
   "license": "MIT",
   "main": "/dist/index.ts",
-  "name": "developer-adk-boiler",
-  "version": "1.0.6",
+  "name": "developer-adk-designprototype",
+  "version": "1.0.7",
   "description": "PilotCity Development Kit Template for creating your own Program Activities",
   "repository": {
     "type": "git",
