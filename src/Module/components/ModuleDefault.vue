@@ -41,7 +41,7 @@
       buffer-value="100"
       stream
     />
-    <div class="module-edit__container-preview">
+    <div class="module-default__container mt-12">
       <div class="module-default__log-text">
         <input
           ref="fileInput"
@@ -294,7 +294,7 @@ export default defineComponent({
 
   &__collapse-divider {
     margin-top: 15px;
-    margin-bottom: 75px;
+    // margin-bottom: 75px;
     margin-right: none;
     margin-left: none;
     padding-right: none;
