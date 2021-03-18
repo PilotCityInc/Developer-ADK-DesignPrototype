@@ -321,7 +321,10 @@ export default defineComponent({
   // }
   //   },
   setup(props, ctx) {
-    const programDoc = getModMongoDoc(props, ctx.emit);
+    let programDoc = null;
+    if (props.value) {
+      programDoc = getModMongoDoc(props, ctx.emit);
+    }
     const defaultMakeProps = {
       minLogs: 3
     };
