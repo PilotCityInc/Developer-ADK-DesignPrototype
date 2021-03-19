@@ -157,15 +157,10 @@ export default defineComponent({
       teamAdkData: null as null | Record<string, any>
     });
 
-    const { adkData: teamAdkData } = getModAdk(
-      props,
-      ctx.emit,
-      'make',
-      {},
-      'teamDoc',
-      'inputTeamDoc'
-    );
-    state.teamAdkData = teamAdkData.value;
+    if (props.teamDoc) {
+      const { adkData } = getModAdk(props, ctx.emit, 'make', {}, 'teamDoc', 'inputTeamDoc');
+      state.teamAdkData = adkData.value;
+    }
 
     state.programDoc = getModMongoDoc(props, ctx.emit);
     if (props.teamDoc)
@@ -232,7 +227,7 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
-      teamAdkData,
+      // teamAdkData,
       fileInput,
       onFilesAdded,
       logMilestone,

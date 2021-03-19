@@ -328,12 +328,16 @@ export default defineComponent({
     const defaultMakeProps = {
       minLogs: 3
     };
-    getModAdk(props, ctx.emit, 'make', defaultMakeProps);
+    if (props.value) {
+      getModAdk(props, ctx.emit, 'make', defaultMakeProps);
+    }
 
     const defaultTeamProps = {
       logs: []
     };
-    getModAdk(props, ctx.emit, 'make', defaultTeamProps, 'teamDoc', 'inputTeamDoc');
+    if (props.teamDoc) {
+      getModAdk(props, ctx.emit, 'make', defaultTeamProps, 'teamDoc', 'inputTeamDoc');
+    }
 
     // ENTER ACTIVITY NAME BELOW
     const moduleName = ref('Make');
