@@ -170,6 +170,17 @@ export default defineComponent({
 
     state.userId = props.userDoc?.data._id;
 
+    // Used for storing completeness of this module for the individual student.
+    // Might be best to store in teamDoc, but we currently only check student's individual program for completeness
+    let index = state.programDoc.value.data.adks.findIndex(function findResearchObj(obj) {
+      return obj.name === 'make';
+    });
+    if (index === -1)
+      index =
+        state.programDoc.value.data.adks.push({
+          name: 'make'
+        }) - 1;
+
     const onFilesAdded = (event: Event) => {
       event.target!.files.forEach((file: File) => {
         const reader = new FileReader();
@@ -211,6 +222,14 @@ export default defineComponent({
       state.images = [];
       state.logInput = '';
       state.logError = '';
+
+      // TODO: get the actual expected minimum log length.
+      if (state.teamAdkData!.logs.length > 3) {
+        state.programDoc.value.update(() => ({
+        isComplete: true,
+        adkIndex: index
+      }))
+      }
     };
 
     const removeMilestone = (id: ObjectId) => {

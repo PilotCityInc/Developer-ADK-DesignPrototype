@@ -14,6 +14,6 @@ export interface Image {
 
 export interface MongoDoc {
   data: Record<string, any>;
-  update: () => Promise<any>;
+  update: (shouldMarkAsComplete?:any) => Promise<any>;
   changeStream: any;
 }
