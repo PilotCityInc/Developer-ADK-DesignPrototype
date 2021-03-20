@@ -106,8 +106,6 @@ export default defineComponent({
 
     const studentDoc: Ref<MongoDoc> = ref({
       data: {
-        firstName: 'me',
-        lastName: 'test',
         _id: new ObjectId(1),
         team: null as null | ObjectId,
         adks: []
@@ -134,9 +132,9 @@ export default defineComponent({
 
     return {
       programDocStub,
-      studentDoc,
+      studentDoc: null,
       userDoc,
-      teamDoc,
+      teamDoc: null,
       userTypeStub
     };
   }

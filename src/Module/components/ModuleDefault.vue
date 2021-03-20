@@ -91,7 +91,7 @@
 
       <Table
         class="module-default__table-view"
-        :items="teamAdkData.logs"
+        :items="teamAdkData ? teamAdkData.logs : []"
         :user-id="userId"
         v-on="$listeners"
         @removeMilestone="removeMilestone"
@@ -154,32 +154,41 @@ export default defineComponent({
       teamDocument: null as null | MongoDoc,
       studentDocument: null as null | MongoDoc,
       userId: null as null | ObjectId,
-      teamAdkData: null as null | Record<string, any>
+      teamAdkData: null as null | Record<string, any>,
+      studentAdkData: null as null | Record<string, any>
     });
 
+    state.programDoc = getModMongoDoc(props, ctx.emit);
     if (props.teamDoc) {
+      state.teamDocument = getModMongoDoc(props, ctx.emit, {}, 'teamDoc', 'inputTeamDoc');
       const { adkData } = getModAdk(props, ctx.emit, 'make', {}, 'teamDoc', 'inputTeamDoc');
       state.teamAdkData = adkData.value;
     }
-
-    state.programDoc = getModMongoDoc(props, ctx.emit);
-    if (props.teamDoc)
-      state.teamDocument = getModMongoDoc(props, ctx.emit, {}, 'teamDoc', 'inputTeamDoc');
-    if (props.studentDoc)
+    if (props.studentDoc) {
       state.studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
+      const { adkData } = getModAdk(
+        props,
+        ctx.emit,
+        'make',
+        { isComplete: false },
+        'studentDoc',
+        'inputStudentDoc'
+      );
+      state.studentAdkData = adkData.value;
+    }
 
     state.userId = props.userDoc?.data._id;
 
     // Used for storing completeness of this module for the individual student.
     // Might be best to store in teamDoc, but we currently only check student's individual program for completeness
-    let index = state.programDoc.value.data.adks.findIndex(function findResearchObj(obj) {
-      return obj.name === 'make';
-    });
-    if (index === -1)
-      index =
-        state.programDoc.value.data.adks.push({
-          name: 'make'
-        }) - 1;
+    // let index = state.programDoc.value.data.adks.findIndex(function findResearchObj(obj) {
+    //   return obj.name === 'make';
+    // });
+    // if (index === -1)
+    //   index =
+    //     state.programDoc.value.data.adks.push({
+    //       name: 'make'
+    //     }) - 1;
 
     const onFilesAdded = (event: Event) => {
       event.target!.files.forEach((file: File) => {
@@ -225,16 +234,13 @@ export default defineComponent({
 
       // TODO: get the actual expected minimum log length.
       if (state.teamAdkData!.logs.length > 3) {
-        state.programDoc.value.update(() => ({
-        isComplete: true,
-        adkIndex: index
-      }))
+        state.studentAdkData!.isComplete = true;
+        state.studentDocument?.update();
       }
     };
 
     const removeMilestone = (id: ObjectId) => {
       state.teamAdkData!.logs = state.teamAdkData!.logs.filter((item: TableItem) => {
-        console.log(item.id.toString());
         return item.id !== id;
       });
       state.teamDocument!.update();
@@ -246,7 +252,6 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
-      // teamAdkData,
       fileInput,
       onFilesAdded,
       logMilestone,
