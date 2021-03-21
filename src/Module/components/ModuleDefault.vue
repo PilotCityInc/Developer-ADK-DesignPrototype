@@ -168,14 +168,7 @@ export default defineComponent({
     }
     if (props.studentDoc) {
       state.studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
-      const { adkData } = getModAdk(
-        props,
-        ctx.emit,
-        'make',
-        { isComplete: false },
-        'studentDoc',
-        'inputStudentDoc'
-      );
+      const { adkData } = getModAdk(props, ctx.emit, 'make', {}, 'studentDoc', 'inputStudentDoc');
       state.studentAdkData = adkData.value;
     }
 
@@ -183,14 +176,14 @@ export default defineComponent({
 
     // Used for storing completeness of this module for the individual student.
     // Might be best to store in teamDoc, but we currently only check student's individual program for completeness
-    // let index = state.programDoc.value.data.adks.findIndex(function findResearchObj(obj) {
-    //   return obj.name === 'make';
-    // });
-    // if (index === -1)
-    //   index =
-    //     state.programDoc.value.data.adks.push({
-    //       name: 'make'
-    //     }) - 1;
+    let index = state.programDoc?.data.adks.findIndex(function findResearchObj(obj) {
+      return obj.name === 'make';
+    });
+    if (index === -1)
+      index =
+        state.programDoc?.data.adks.push({
+          name: 'make'
+        }) - 1;
 
     const onFilesAdded = (event: Event) => {
       event.target!.files.forEach((file: File) => {
@@ -236,8 +229,10 @@ export default defineComponent({
 
       // TODO: get the actual expected minimum log length.
       if (state.teamAdkData!.logs.length > 3) {
-        state.studentAdkData!.isComplete = true;
-        state.studentDocument?.update();
+        state.programDoc?.update(() => ({
+          isComplete: true,
+          adkIndex: index
+        }));
       }
     };
 
