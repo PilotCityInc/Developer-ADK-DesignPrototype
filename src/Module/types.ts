@@ -2,7 +2,7 @@ import { ObjectId } from 'bson';
 
 export interface TableItem {
   id: ObjectId;
-  author: number;
+  author: ObjectId;
   time: Date;
   log: string;
   proof: Image | Image[];
@@ -14,6 +14,6 @@ export interface Image {
 
 export interface MongoDoc {
   data: Record<string, any>;
-  update: (shouldMarkAsComplete?:any) => Promise<any>;
+  update: (shouldMarkAsComplete?: any) => Promise<any>;
   changeStream: any;
 }

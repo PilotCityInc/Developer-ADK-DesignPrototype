@@ -41,7 +41,7 @@
       </template>
       <template v-slot:item.delete="{ item }">
         <v-btn
-          v-if="item.author === userId"
+          v-if="item.author.equals(userId)"
           small
           icon
           depressed
@@ -80,7 +80,7 @@ export default {
     const filter = ref('Personal');
     const tableItems = computed(() =>
       props.items.filter((item: TableItem) => {
-        if (filter.value === 'Personal') return item.author === props.userId;
+        if (filter.value === 'Personal') return item.author.equals(props.userId);
         return true;
       })
     );
