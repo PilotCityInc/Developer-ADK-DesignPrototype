@@ -35,6 +35,13 @@ export default {
     images: {
       type: Object as PropType<Image>,
       required: true
+    },
+    userType: {
+      required: true,
+      type: String
+      // participant: '',
+      // organizer: '',
+      // stakeholder: ''
     }
   },
   setup() {

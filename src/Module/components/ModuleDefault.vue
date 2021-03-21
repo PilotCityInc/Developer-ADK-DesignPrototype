@@ -49,6 +49,7 @@
           accept="image/*"
           multiple
           style="display: none"
+          :disabled="userType === 'stakeholder'"
           @change="onFilesAdded"
         />
         <v-text-field
@@ -67,12 +68,12 @@
         </v-text-field>
 
         <v-btn
-          :disabled="userType === 'stakeholder'"
           class="module-default__log-btn"
           outlined
           rounded
           depressed
           :ripple="false"
+          :disabled="userType === 'stakeholder'"
           @click="logMilestone"
           >LOG MILESTONE</v-btn
         >

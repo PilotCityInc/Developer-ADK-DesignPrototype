@@ -42,6 +42,7 @@
       <template v-slot:item.delete="{ item }">
         <v-btn
           v-if="item.author.equals(userId)"
+          :disabled="userType === 'stakeholder'"
           small
           icon
           depressed
@@ -74,6 +75,13 @@ export default {
     userId: {
       required: true,
       type: Object as PropType<ObjectId>
+    },
+    userType: {
+      required: true,
+      type: String
+      // participant: '',
+      // organizer: '',
+      // stakeholder: ''
     }
   },
   setup(props) {
@@ -98,7 +106,7 @@ export default {
     text-align: center;
     // display: flex;
     flex-direction: column;
-    max-width: 100% !important;
+    max-width: 100%;
   }
 
   &__total-log {
