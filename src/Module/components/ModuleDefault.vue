@@ -53,6 +53,7 @@
         />
         <v-text-field
           v-model="logInput"
+          :disabled="userType === 'stakeholder'"
           class="module-default__text-field"
           placeholder="Describe your milestone and upload proof"
           outlined
@@ -66,6 +67,7 @@
         </v-text-field>
 
         <v-btn
+          :disabled="userType === 'stakeholder'"
           class="module-default__log-btn"
           outlined
           rounded
