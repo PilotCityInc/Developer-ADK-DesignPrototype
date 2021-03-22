@@ -126,12 +126,12 @@ export default defineComponent({
     //   }
     // });
     const boilerInstructions = ref([
-      'Click resource link',
-      'Review, complete or understand resource contents',
-      'Mark completed until all finished'
+      'Document your milestone or process in the form of an image, screenshot or photo',
+      'Upload and describe your documented image, screenshot or photo',
+      'Repeat as frequently as necessary to document your process'
     ]);
     const goal = ref([
-      'To research employer-provided resources, links, examples, possibilities & direction for projects'
+      'To design, prototype and go through the iteration of making your project by logging your milestones and process through screenshots and descriptions'
     ]);
     // function populate() {
     //   boilerInstructions.value.push('');
