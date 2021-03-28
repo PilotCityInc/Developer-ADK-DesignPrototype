@@ -108,6 +108,7 @@
               :team-doc="teamDoc"
               :user-doc="userDoc"
               :student-doc="studentDoc"
+              :user-type="userType"
               @inputTeamDoc="$emit('inputTeamDoc', $event)"
               @inputStudentDoc="$emit('inputStudentDoc', $event)"
             />
