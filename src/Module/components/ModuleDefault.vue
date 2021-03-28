@@ -96,6 +96,7 @@
         class="module-default__table-view"
         :items="teamAdkData ? teamAdkData.logs : []"
         :user-id="userId"
+        :user-type="userType"
         v-on="$listeners"
         @removeMilestone="removeMilestone"
       />
