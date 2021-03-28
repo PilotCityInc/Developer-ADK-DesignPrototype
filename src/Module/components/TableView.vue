@@ -107,6 +107,7 @@ export default {
     // display: flex;
     flex-direction: column;
     max-width: 100%;
+    width: 100%;
   }
 
   &__total-log {
