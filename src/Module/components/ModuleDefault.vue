@@ -230,15 +230,15 @@ export default defineComponent({
       };
 
       state.teamAdkData!.logs.unshift(log);
-      state.teamDocument!.update();
+      state.teamDocument?.update();
 
       state.images = [];
       state.logInput = '';
       state.logError = '';
 
       // TODO: get the actual expected minimum log length.
-      if (state.teamAdkData!.logs.length > 3) {
-        state.programDoc?.update(() => ({
+      if (state.teamAdkData?.logs.length > 3) {
+        state.teamDocument?.update(() => ({
           isComplete: true,
           adkIndex: index
         }));
