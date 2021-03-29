@@ -296,7 +296,7 @@ export default defineComponent({
       // min-height: 57px;
     }
     margin-left: 20px;
-    height: 100%;
+    // height: 100%;
   }
 
   &__table-view {
