@@ -226,6 +226,7 @@ export default defineComponent({
         log: state.logInput,
         time: new Date(),
         author: props.userDoc?.data._id,
+        avatar: props.userDoc?.data.profile ? props.userDoc?.data.profile.small : '',
         proof: state.images
       };
 
