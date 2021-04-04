@@ -27,11 +27,8 @@
       :items-per-page="100"
       :hide-default-footer="true"
     >
-      <template v-slot:item.avatar>
-        <v-avatar size="30"
-          ><img
-            src="https://media-exp1.licdn.com/dms/image/C5603AQEq9BL9NuOBAQ/profile-displayphoto-shrink_200_200/0?e=1610582400&v=beta&t=1lSuL9hD0Fp4HGbTuAiQOTNOhOxXzqNvXVo1mg51Wmg"
-        /></v-avatar>
+      <template v-slot:item.avatar="{ item }">
+        <v-avatar size="30" color="grey lighten-2"><v-img :src="item.avatar" /></v-avatar>
       </template>
       <template v-slot:item.proof="{ item }">
         <ProofPreview :images="item.proof" />
