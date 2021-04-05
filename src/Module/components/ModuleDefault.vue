@@ -71,6 +71,7 @@
           class="module-default__log-btn"
           outlined
           rounded
+          x-large
           depressed
           :ripple="false"
           :disabled="userType === 'stakeholder'"
