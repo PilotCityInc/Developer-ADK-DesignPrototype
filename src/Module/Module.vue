@@ -344,7 +344,7 @@ export default defineComponent({
     const moduleName = ref('Make');
     const page = reactive({
       subpages: ['Setup', 'Presets'],
-      currentPage: 'Presets'
+      currentPage: 'presets'
     });
     if (props.userType === 'organizer') {
       page.currentPage = 'setup';
