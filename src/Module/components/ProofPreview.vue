@@ -9,7 +9,7 @@
 
       <v-card>
         <v-card-title>
-          <div class="d-flex align-end flex-column">
+          <div class="d-flex justify-end align-end flex-column">
             <v-btn icon large color="primary" @click="showDialog = false">
               <v-icon large>mdi-close</v-icon>
             </v-btn>
