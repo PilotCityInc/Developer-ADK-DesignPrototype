@@ -33,15 +33,8 @@ export default {
   name: 'ProofPreview',
   props: {
     images: {
-      type: Object as PropType<Image>,
+      type: Array as PropType<Image[]>,
       required: true
-    },
-    userType: {
-      required: true,
-      type: String
-      // participant: '',
-      // organizer: '',
-      // stakeholder: ''
     }
   },
   setup() {

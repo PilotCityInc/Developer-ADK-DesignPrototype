@@ -62,11 +62,10 @@
           hide-details="auto"
           :error-messages="logError"
           append-icon="mdi-attachment"
-          label="Log your milestones"
+          :label="`Logs left ${logsLeft} of ${adkData.minLogs}. `"
           @click:append="$refs.fileInput.click()"
         >
         </v-text-field>
-
         <v-btn
           class="module-default__log-btn"
           outlined
@@ -75,10 +74,12 @@
           depressed
           :ripple="false"
           :disabled="userType === 'stakeholder'"
+          :loading="logMilestoneLoading"
           @click="logMilestone"
           >LOG MILESTONE</v-btn
         >
       </div>
+      <div v-if="teamAdkData.logs.length >= adkData.minLogs">Minimum logs reached.</div>
       <div class="module-default__log-chips">
         <v-chip
           v-for="image in images"
@@ -109,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, toRefs, PropType, defineComponent } from '@vue/composition-api';
+import { ref, reactive, toRefs, PropType, defineComponent, computed } from '@vue/composition-api';
 import { getModMongoDoc, getModAdk } from 'pcv4lib/src';
 import { ObjectId } from 'bson';
 import { MongoDoc, TableItem, Image } from '../types';
@@ -148,6 +149,11 @@ export default defineComponent({
       required: false,
       type: Object as PropType<MongoDoc>,
       default: () => {}
+    },
+    uploadItem: {
+      required: false,
+      type: Function as PropType<(item: { item: File }) => Promise<any>>,
+      default: () => {}
     }
   },
   setup(props, ctx) {
@@ -166,20 +172,38 @@ export default defineComponent({
       teamDocument: null as null | MongoDoc,
       studentDocument: null as null | MongoDoc,
       userId: null as null | ObjectId,
+      adkData: null as null | Record<string, any>,
       teamAdkData: null as null | Record<string, any>,
-      studentAdkData: null as null | Record<string, any>
+      studentAdkData: null as null | Record<string, any>,
+      logMilestoneLoading: false
     });
 
     state.programDoc = getModMongoDoc(props, ctx.emit);
+    const { adkData } = getModAdk(props, ctx.emit, 'make');
+    state.adkData = adkData;
     if (props.teamDoc) {
       state.teamDocument = getModMongoDoc(props, ctx.emit, {}, 'teamDoc', 'inputTeamDoc');
-      const { adkData } = getModAdk(props, ctx.emit, 'make', {}, 'teamDoc', 'inputTeamDoc');
-      state.teamAdkData = adkData.value;
+      const { adkData: teamAdkData } = getModAdk(
+        props,
+        ctx.emit,
+        'make',
+        {},
+        'teamDoc',
+        'inputTeamDoc'
+      );
+      state.teamAdkData = teamAdkData;
     }
     if (props.studentDoc) {
       state.studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
-      const { adkData } = getModAdk(props, ctx.emit, 'make', {}, 'studentDoc', 'inputStudentDoc');
-      state.studentAdkData = adkData.value;
+      const { adkData: studentAdkData } = getModAdk(
+        props,
+        ctx.emit,
+        'make',
+        {},
+        'studentDoc',
+        'inputStudentDoc'
+      );
+      state.studentAdkData = studentAdkData;
     }
 
     state.userId = props.userDoc?.data._id;
@@ -197,18 +221,11 @@ export default defineComponent({
 
     const onFilesAdded = (event: Event) => {
       event.target!.files.forEach((file: File) => {
-        const reader = new FileReader();
-        reader.onload = (fileEvent: Event) => {
-          state.images.push({
-            name: file.name,
-            url: fileEvent.target!.result
-          });
-        };
-        reader.readAsDataURL(file);
+        state.images.push(file);
       });
     };
 
-    const logMilestone = () => {
+    const logMilestone = async () => {
       if (!state.images.length && !state.logInput.length) {
         state.logError = 'Describe and attach an image of your milestone';
         return;
@@ -221,6 +238,21 @@ export default defineComponent({
         state.logError = 'Describe your milestone';
         return;
       }
+      state.logMilestoneLoading = true;
+
+      const proof = [];
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const image of state.images) {
+        // eslint-disable-next-line no-await-in-loop
+        const data = await props.uploadItem({
+          item: (image as unknown) as File
+        });
+        proof.push({
+          name: image.name,
+          url: data.Location
+        });
+      }
 
       const log = {
         id: new ObjectId(),
@@ -228,7 +260,7 @@ export default defineComponent({
         time: new Date(),
         author: props.userDoc?.data._id,
         avatar: props.userDoc?.data.profile ? props.userDoc?.data.profile.small : '',
-        proof: state.images
+        proof
       };
 
       state.teamAdkData!.logs.unshift(log);
@@ -238,13 +270,13 @@ export default defineComponent({
       state.logInput = '';
       state.logError = '';
 
-      // TODO: get the actual expected minimum log length.
-      if (state.teamAdkData?.logs.length > 3) {
+      if (state.teamAdkData?.logs.length > state.adkData!.minLogs) {
         state.teamDocument?.update(() => ({
           isComplete: true,
           adkIndex: index
         }));
       }
+      state.logMilestoneLoading = false;
     };
 
     const removeMilestone = (id: ObjectId) => {
@@ -258,6 +290,10 @@ export default defineComponent({
       state.images = state.images.filter((image: Image) => image.name !== file);
     };
 
+    const logsLeft = computed(() =>
+      Math.max((state.adkData!.minLogs || 3) - state.teamAdkData!.logs.length, 0)
+    );
+
     return {
       ...toRefs(state),
       fileInput,
@@ -266,7 +302,8 @@ export default defineComponent({
       removeMilestone,
       removeFile,
       setupInstructions,
-      showInstructions
+      showInstructions,
+      logsLeft
     };
   }
 });

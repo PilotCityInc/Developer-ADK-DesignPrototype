@@ -53,13 +53,13 @@
 
 <script lang="ts">
 import moment from 'moment';
-import { ref, PropType, computed } from '@vue/composition-api';
+import { ref, PropType, computed, defineComponent } from '@vue/composition-api';
 import { ObjectId } from 'bson';
 import ProofPreview from './ProofPreview.vue';
 import TABLE_HEADER from './const';
 import { TableItem } from '../types';
 
-export default {
+export default defineComponent({
   name: 'TableView',
   components: {
     ProofPreview
@@ -84,17 +84,21 @@ export default {
   setup(props) {
     const filter = ref('Personal');
     const tableItems = computed(() =>
-      props.items.filter((item: TableItem) => {
-        if (filter.value === 'Personal') return item.author.equals(props.userId);
-        return true;
-      })
+      props.items
+        .filter((item: TableItem) => {
+          if (filter.value === 'Personal') return item.author.equals(props.userId);
+          return true;
+        })
+        .map(item => {
+          return { ...item, id: item.id.toString() };
+        })
     );
     const formatDate = (date: Date) => {
       return moment(date).fromNow();
     };
     return { header: ref(TABLE_HEADER), formatDate, filter, tableItems };
   }
-};
+});
 </script>
 
 <style lang="scss">
