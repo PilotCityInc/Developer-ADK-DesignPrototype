@@ -16,7 +16,7 @@
       ></v-select>
       <div class="presets__reflection justify-center d-flex">
         <v-btn
-          class="presets__reflection-buttons mt-12"
+          class="presets__reflection-buttons mt-8"
           x-large
           rounded
           depressed
