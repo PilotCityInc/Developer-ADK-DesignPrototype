@@ -56,32 +56,45 @@
           v-model="logInput"
           :disabled="userType === 'stakeholder'"
           class="module-default__text-field"
-          placeholder="Describe your milestone and upload proof"
+          :placeholder="`Minimum of ${logsLeft} logs left`"
           outlined
           rounded
           hide-details="auto"
           :error-messages="logError"
           append-icon="mdi-attachment"
-          :label="`Logs left ${logsLeft} of ${adkData.minLogs}. `"
+          label="Upload & describe milestone"
           @click:append="$refs.fileInput.click()"
         >
-        </v-text-field>
-        <v-btn
-          class="module-default__log-btn"
+          <!-- <v-text-field
+          v-model="logInput"
+          :disabled="userType === 'stakeholder'"
+          class="module-default__text-field"
+          :placeholder="`Minimum of ${logsLeft} of ${adkData.minLogs} minimum logs left`"
           outlined
           rounded
+          hide-details="auto"
+          :error-messages="logError"
+          append-icon="mdi-attachment"
+          label="Upload & describe milestone"
+          @click:append="$refs.fileInput.click()"
+        > -->
+        </v-text-field>
+        <v-btn
+          class="module-default__log-btn font-weight-bold white--text"
+          rounded
           x-large
+          color="#6eba80"
           depressed
           :ripple="false"
           :disabled="userType === 'stakeholder'"
           :loading="logMilestoneLoading"
           @click="logMilestone"
-          >LOG MILESTONE</v-btn
+          ><v-icon left>mdi-cloud-upload-outline</v-icon>Log Milestone</v-btn
         >
       </div>
-      <div v-if="teamAdkData ? teamAdkData.logs.length : 0 >= adkData.minLogs">
+      <!-- <div v-if="teamAdkData ? teamAdkData.logs.length : 0 >= adkData.minLogs">
         Minimum logs reached.
-      </div>
+      </div> -->
       <div class="module-default__log-chips">
         <v-chip
           v-for="image in images"
@@ -220,7 +233,7 @@ export default defineComponent({
 
     const logMilestone = async () => {
       if (!state.images.length && !state.logInput.length) {
-        state.logError = 'Describe and attach an image of your milestone';
+        state.logError = 'Describe and attach an image to document your milestone';
         return;
       }
       if (!state.images.length) {
@@ -307,7 +320,7 @@ export default defineComponent({
 .module-default {
   &__log-text {
     display: flex;
-    max-width: 85%;
+    max-width: 90%;
     margin-left: auto;
     margin-right: auto;
   }
