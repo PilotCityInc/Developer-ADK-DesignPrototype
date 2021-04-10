@@ -109,6 +109,7 @@
               :user-doc="userDoc"
               :student-doc="studentDoc"
               :user-type="userType"
+              :upload-item="uploadItem"
               @inputTeamDoc="$emit('inputTeamDoc', $event)"
               @inputStudentDoc="$emit('inputStudentDoc', $event)"
             />
@@ -302,6 +303,11 @@ export default defineComponent({
     userDoc: {
       required: false,
       type: Object as PropType<MongoDoc | null>,
+      default: () => {}
+    },
+    uploadItem: {
+      required: false,
+      type: Function as PropType<(item: { item: File }) => Promise<any>>,
       default: () => {}
     }
   },
