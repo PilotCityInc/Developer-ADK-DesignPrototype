@@ -326,7 +326,7 @@ export default defineComponent({
   }
 
   &__log-chips {
-    max-width: 85%;
+    max-width: 90%;
     margin-left: auto;
     margin-right: auto;
   }
