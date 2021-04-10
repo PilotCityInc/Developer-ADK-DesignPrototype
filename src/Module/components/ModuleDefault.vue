@@ -176,6 +176,7 @@ export default defineComponent({
       userId: null as null | ObjectId,
       adkData: null as null | Record<string, any>,
       teamAdkData: null as null | Record<string, any>,
+      teamAdkIndex: -1,
       studentAdkData: null as null | Record<string, any>,
       logMilestoneLoading: false
     });
@@ -185,7 +186,7 @@ export default defineComponent({
     state.adkData = adkData;
     if (props.teamDoc) {
       state.teamDocument = getModMongoDoc(props, ctx.emit, {}, 'teamDoc', 'inputTeamDoc');
-      const { adkData: teamAdkData } = getModAdk(
+      const { adkData: teamAdkData, adkIndex: teamAdkIndex } = getModAdk(
         props,
         ctx.emit,
         'make',
@@ -194,6 +195,7 @@ export default defineComponent({
         'inputTeamDoc'
       );
       state.teamAdkData = teamAdkData;
+      state.teamAdkIndex = teamAdkIndex;
     }
     if (props.studentDoc) {
       state.studentDocument = getModMongoDoc(props, ctx.emit, {}, 'studentDoc', 'inputStudentDoc');
@@ -209,17 +211,6 @@ export default defineComponent({
     }
 
     state.userId = props.userDoc?.data._id;
-
-    // Used for storing completeness of this module for the individual student.
-    // Might be best to store in teamDoc, but we currently only check student's individual program for completeness
-    let index = state.programDoc?.data.adks.findIndex(function findResearchObj(obj) {
-      return obj.name === 'make';
-    });
-    if (index === -1)
-      index =
-        state.programDoc?.data.adks.push({
-          name: 'make'
-        }) - 1;
 
     const onFilesAdded = (event: Event) => {
       event.target!.files.forEach((file: File) => {
@@ -272,10 +263,10 @@ export default defineComponent({
       state.logInput = '';
       state.logError = '';
 
-      if (state.teamAdkData?.logs.length > state.adkData!.minLogs) {
+      if (state.teamAdkData?.logs.length >= state.adkData!.minLogs) {
         state.teamDocument?.update(() => ({
           isComplete: true,
-          adkIndex: index
+          adkIndex: state.teamAdkIndex
         }));
       }
       state.logMilestoneLoading = false;
