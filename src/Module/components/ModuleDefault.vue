@@ -79,7 +79,9 @@
           >LOG MILESTONE</v-btn
         >
       </div>
-      <div v-if="teamAdkData.logs.length >= adkData.minLogs">Minimum logs reached.</div>
+      <div v-if="teamAdkData ? teamAdkData.logs.length : 0 >= adkData.minLogs">
+        Minimum logs reached.
+      </div>
       <div class="module-default__log-chips">
         <v-chip
           v-for="image in images"
@@ -279,9 +281,9 @@ export default defineComponent({
       state.logMilestoneLoading = false;
     };
 
-    const removeMilestone = (id: ObjectId) => {
+    const removeMilestone = (id: string) => {
       state.teamAdkData!.logs = state.teamAdkData!.logs.filter((item: TableItem) => {
-        return item.id !== id;
+        return item.id.toString() !== id;
       });
       state.teamDocument!.update();
     };
@@ -290,9 +292,10 @@ export default defineComponent({
       state.images = state.images.filter((image: Image) => image.name !== file);
     };
 
-    const logsLeft = computed(() =>
-      Math.max((state.adkData!.minLogs || 3) - state.teamAdkData!.logs.length, 0)
-    );
+    const logsLeft = computed(() => {
+      if (!props.teamDoc) return state.adkData!.minLogs || 3;
+      return Math.max((state.adkData!.minLogs || 3) - state.teamAdkData!.logs.length, 0);
+    });
 
     return {
       ...toRefs(state),
