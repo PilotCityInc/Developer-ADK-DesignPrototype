@@ -95,7 +95,7 @@
       <!-- <div v-if="teamAdkData ? teamAdkData.logs.length : 0 >= adkData.minLogs">
         Minimum logs reached.
       </div> -->
-      <div class="module-default__log-chips">
+      <div class="module-default__log-chips mt-2">
         <v-chip
           v-for="image in images"
           :key="image.name"
