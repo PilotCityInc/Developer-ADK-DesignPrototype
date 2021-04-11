@@ -333,7 +333,7 @@ export default defineComponent({
 
   &__text-field {
     &.v-text-field {
-      width: 400px;
+      width: 100%;
     }
   }
 
